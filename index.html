@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fede-Bot | Tutorial – Entendiendo Repasos Interactivos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --ficde-azul-dark: #134252;
+      --ficde-azul-light: #2c5c6e;
+      --ficde-naranja: #e68161;
+      --ficde-naranja-hover: #ff9f85;
+      --tarjeta-bg: #f0f4f5;
+      --input-bg: #e2e8eb;
+      --texto-principal: #0f2d38;
+      --texto-secundario: #4a636e;
+      --verde-exito: #2e7d32;
+      --verde-bg: #c8e6c9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+      min-height: 100vh;
+      color: var(--texto-principal);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* === HEADER === */
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      border-bottom: 2px solid var(--ficde-naranja);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-img {
+      height: 60px;
+      width: auto;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      animation: slideInLeft 0.6s ease-out;
+    }
+
+    .header-title {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .header-title span {
+      color: var(--ficde-naranja);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--ficde-naranja);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* === HERO SECTION === */
+    .hero {
+      text-align: center;
+      padding: 60px 40px 40px 40px;
+      color: white;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero h1 span {
+      color: var(--ficde-naranja);
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 50px;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* === PERSONAJE CON EFECTOS === */
+    .hero-character-container {
+      position: relative;
+      display: inline-block;
+      margin: 0 auto 40px auto;
+      animation: slideInUp 0.8s ease-out;
+    }
+
+    .hero-character {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(230, 129, 97, 0.2), transparent);
+      border-radius: 50%;
+      padding: 20px;
+    }
+
+    .hero-character img {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+      object-fit: contain;
+    }
+
+    /* === EFECTOS FLOTANTES === */
+    .floating-emoji {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: float-emoji 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .emoji-1 { 
+      top: -20px; 
+      left: 10%; 
+      animation-delay: 0s;
+    }
+    .emoji-2 { 
+      top: 10%; 
+      right: 5%; 
+      animation-delay: 0.6s;
+    }
+    .emoji-3 { 
+      bottom: 10%; 
+      left: 5%; 
+      animation-delay: 1.2s;
+    }
+    .emoji-4 { 
+      bottom: -20px; 
+      right: 10%; 
+      animation-delay: 1.8s;
+    }
+
+    .floating-paper {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: float-paper 4s ease-in-out infinite;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .paper-1 { 
+      top: 15%; 
+      left: -30px; 
+      animation-delay: 0.2s;
+    }
+    .paper-2 { 
+      top: 50%; 
+      right: -40px; 
+      animation-delay: 0.8s;
+    }
+    .paper-3 { 
+      bottom: 20%; 
+      left: -35px; 
+      animation-delay: 1.4s;
+    }
+    .paper-4 { 
+      top: 35%; 
+      right: -45px; 
+      animation-delay: 2s;
+    }
+
+    @keyframes float-emoji {
+      0%, 100% { 
+        transform: translateY(0px) scale(1);
+        opacity: 0.8;
+      }
+      50% { 
+        transform: translateY(-30px) scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes float-paper {
+      0%, 100% { 
+        transform: translateX(0px) rotate(0deg);
+        opacity: 0.6;
+      }
+      50% { 
+        transform: translateX(40px) rotate(15deg);
+        opacity: 1;
+      }
+    }
+
+    /* === RADIO PLAYER FLOTANTE === */
+    .radio-player {
+      position: fixed;
+      right: 25px;
+      top: 120px;
+      background: white;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 99;
+      transition: all 0.3s ease;
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    .radio-player:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px rgba(230, 129, 97, 0.5);
+    }
+
+    .radio-icon {
+      font-size: 3rem;
+      transition: all 0.3s ease;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .radio-player.playing .radio-icon {
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    .radio-popup {
+      position: fixed;
+      right: 25px;
+      top: 220px;
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      z-index: 98;
+      min-width: 250px;
+      display: none;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .radio-popup.active {
+      display: block;
+    }
+
+    .radio-header {
+      color: var(--ficde-azul-dark);
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .radio-display {
+      background: linear-gradient(135deg, var(--ficde-azul-dark), var(--ficde-azul-light));
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .radio-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .radio-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .play-btn {
+      background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+      color: white;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 18px rgba(230, 129, 97, 0.5);
+    }
+
+    .stop-btn {
+      background: #f44336;
+      color: white;
+    }
+
+    .stop-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 18px rgba(244, 67, 54, 0.5);
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .volume-control label {
+      font-weight: 600;
+      color: var(--ficde-azul-dark);
+      font-size: 0.85rem;
+    }
+
+    .volume-control input[type="range"] {
+      flex: 1;
+      height: 5px;
+      border-radius: 5px;
+      background: #ddd;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .volume-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--ficde-naranja);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .volume-control input[type="range"]::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--ficde-naranja);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    #audioPlayer {
+      display: none;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+      color: white;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 8px 20px rgba(230, 129, 97, 0.4);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(230, 129, 97, 0.6);
+    }
+
+    /* === CONTAINER === */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    /* === SECCIONES === */
+    section {
+      margin-bottom: 60px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    section h2 {
+      font-size: 2.5rem;
+      color: var(--ficde-azul-dark);
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--ficde-naranja);
+      border-radius: 2px;
+    }
+
+    /* === VIDEOS === */
+    .video-container {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* === DOWNLOAD SECTION === */
+    .download-section {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+    }
+
+    .download-section h3 {
+      color: var(--ficde-azul-dark);
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .download-section p {
+      color: var(--texto-secundario);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    /* === DOCS GRID === */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .doc-card {
+      background: var(--tarjeta-bg);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-align: center;
+      border-left: 6px solid var(--ficde-naranja);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .doc-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+      background: white;
+    }
+
+    .doc-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .doc-card h3 {
+      color: var(--ficde-azul-dark);
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .doc-card p {
+      color: var(--texto-secundario);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .download-btn {
+      background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .download-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(230, 129, 97, 0.4);
+    }
+
+    /* === FOOTER === */
+    footer {
+      background: rgba(19, 66, 82, 0.95);
+      color: white;
+      text-align: center;
+      padding: 30px 40px;
+      border-top: 2px solid var(--ficde-naranja);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 10px 0;
+      font-size: 0.95rem;
+    }
+
+    footer a {
+      color: var(--ficde-naranja);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* === ANIMACIONES === */
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .hero-character {
+        width: 200px;
+        height: 200px;
+      }
+
+      .floating-emoji {
+        font-size: 2rem;
+      }
+
+      .floating-paper {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      section h2 {
+        font-size: 1.8rem;
+      }
+
+      .download-section {
+        padding: 20px;
+      }
+
+      .radio-player {
+        right: 15px;
+        top: 100px;
+        width: 70px;
+        height: 70px;
+      }
+
+      .radio-icon {
+        font-size: 2.5rem;
+      }
+
+      .radio-popup {
+        right: 15px;
+        top: 180px;
+        min-width: 220px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- === HEADER === -->
+  <header>
+    <div class="header-left">
+      <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none';">
+      <div class="header-title">
+        <span>Fede</span>-Bot | Tutorial
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#teorica">Guía Teórica</a>
+      <a href="#practica">Guía Práctica</a>
+      <a href="#contenido">Contenido</a>
+    </nav>
+  </header>
+
+  <!-- === RADIO PLAYER FLOTANTE === -->
+  <div class="radio-player" onclick="toggleRadioPopup()">
+    <div class="radio-icon">🎙️</div>
+  </div>
+
+  <!-- === RADIO POPUP === -->
+  <div class="radio-popup" id="radioPopup">
+    <div class="radio-header">🎵 Music Player</div>
+    
+    <div class="radio-display" id="radioStatus">
+      Presiona PLAY
+    </div>
+
+    <div class="radio-controls">
+      <button class="radio-btn play-btn" onclick="playMusic()" title="Reproducir">
+        ▶️
+      </button>
+      <button class="radio-btn stop-btn" onclick="stopMusic()" title="Detener">
+        ⏹️
+      </button>
+    </div>
+
+    <div class="volume-control">
+      <label for="volumeSlider">🔊</label>
+      <input 
+        type="range" 
+        id="volumeSlider" 
+        min="0" 
+        max="100" 
+        value="70" 
+        onchange="setVolume(this.value)"
+      >
+    </div>
+
+    <audio id="audioPlayer" src="musica.mp3"></audio>
+  </div>
+
+  <!-- === HERO SECTION === -->
+  <div class="hero">
+    <h1>Bienvenido a <span>Fede-Bot</span></h1>
+    <p>Descubre cómo crear repasos interactivos que transforman el aprendizaje en una experiencia dinámica y divertida. Una guía completa para el equipo de FICDE.</p>
+    
+    <!-- === PERSONAJE CON EFECTOS === -->
+    <div class="hero-character-container">
+      <!-- Emojis flotantes -->
+      <div class="floating-emoji emoji-1">🎵</div>
+      <div class="floating-emoji emoji-2">🎶</div>
+      <div class="floating-emoji emoji-3">🎵</div>
+      <div class="floating-emoji emoji-4">🎶</div>
+
+      <!-- Papelitos brillantes -->
+      <div class="floating-paper paper-1">✨</div>
+      <div class="floating-paper paper-2">✨</div>
+      <div class="floating-paper paper-3">✨</div>
+      <div class="floating-paper paper-4">✨</div>
+
+      <!-- Personaje principal -->
+      <div class="hero-character">
+        <img src="personaje.gif" alt="Fede caminando">
+      </div>
+    </div>
+  </div>
+
+   <!-- === CONTENEDOR PRINCIPAL === -->
+<div class="container">
+
+ <!-- === SECCIÓN: GUÍA TEÓRICA === -->
+<section id="teorica">
+  <h2>Guía <span style="color: var(--ficde-naranja);">Teórica</span></h2>
+  <p style="text-align: center; font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px;">
+    Descubre los fundamentos de cómo funciona Fede-Bot: arquitectura, validación de respuestas y estrategia educativa.
+  </p>
+  
+  <!-- REPRODUCTOR CON MÚLTIPLES VIDEOS -->
+  <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 40px;">
+    
+    <!-- VIDEO PRINCIPAL -->
+    <div class="video-container">
+      <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <video 
+          id="videoTeorico"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px;"
+          controls
+          controlsList="nodownload"
+          poster="guia_teorica.png">
+          <source src="contenido/saludo.mp4" type="video/mp4">
+          Tu navegador no soporta videos HTML5
+        </video>
+      </div>
+    </div>
+
+    <!-- INDICADOR DE PROGRESO -->
+    <div style="margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+      <button onclick="cambiarVideoTeorico(0)" class="video-indicator active" style="width: 12px; height: 12px; border-radius: 50%; border: none; cursor: pointer; background: var(--ficde-naranja); transition: all 0.3s ease;" title="Saludo">
+      </button>
+      <button onclick="cambiarVideoTeorico(1)" class="video-indicator" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ficde-naranja); cursor: pointer; background: transparent; transition: all 0.3s ease;" title="Parte 1">
+      </button>
+      <button onclick="cambiarVideoTeorico(2)" class="video-indicator" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ficde-naranja); cursor: pointer; background: transparent; transition: all 0.3s ease;" title="Parte 2">
+      </button>
+    </div>
+
+    <!-- ETIQUETA DEL VIDEO ACTUAL -->
+    <div style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--texto-secundario);">
+      <span id="videoNombreTeorico">🎬 Presentación - Saludo</span>
+    </div>
+
+    <!-- CONTROLES DE NAVEGACIÓN -->
+    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px; flex-wrap: wrap;">
+      <button onclick="videoAnteriorTeorico()" class="btn btn--secondary" style="padding: 10px 20px; font-size: 0.95rem;">
+        ⬅️ Anterior
+      </button>
+      
+      <div style="padding: 10px 20px; background: var(--tarjeta-bg); border-radius: 8px; color: var(--texto-principal); font-weight: 600;">
+        Parte <span id="videoActualTeorico">1</span> de 3
+      </div>
+      
+      <button onclick="videoSiguienteTeorico()" class="btn btn--primary" style="padding: 10px 20px; font-size: 0.95rem;">
+        Siguiente ➡️
+      </button>
+    </div>
+  </div>
+</section>
+
+
+  <!-- === SECCIÓN: GUÍA PRÁCTICA === -->
+<section id="practica">
+  <h2>Guía <span style="color: var(--ficde-naranja);">Práctica</span></h2>
+  <p style="text-align: center; font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px;">
+    Paso a paso: cómo agregar tus propias preguntas, personalizar validaciones y desplegar Fede-Bot en vivo.
+  </p>
+
+  <!-- REPRODUCTOR CON MÚLTIPLES VIDEOS -->
+  <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 40px;">
+    
+    <!-- VIDEO PRINCIPAL -->
+    <div class="video-container">
+      <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <video 
+          id="videoPractico"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px;"
+          controls
+          controlsList="nodownload"
+          poster="guia_practica.png">
+          <source src="contenido/video_practico_parte1.mp4" type="video/mp4">
+          Tu navegador no soporta videos HTML5
+        </video>
+      </div>
+    </div>
+
+    <!-- INDICADOR DE PROGRESO -->
+    <div style="margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+      <button onclick="cambiarVideoPractico(0)" class="video-indicator active" style="width: 12px; height: 12px; border-radius: 50%; border: none; cursor: pointer; background: var(--ficde-naranja); transition: all 0.3s ease;" title="Parte 1">
+      </button>
+      <button onclick="cambiarVideoPractico(1)" class="video-indicator" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ficde-naranja); cursor: pointer; background: transparent; transition: all 0.3s ease;" title="Parte 2">
+      </button>
+      <button onclick="cambiarVideoPractico(2)" class="video-indicator" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ficde-naranja); cursor: pointer; background: transparent; transition: all 0.3s ease;" title="Parte 3">
+      </button>
+      <button onclick="cambiarVideoPractico(3)" class="video-indicator" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ficde-naranja); cursor: pointer; background: transparent; transition: all 0.3s ease;" title="Parte 4">
+      </button>
+    </div>
+
+    <!-- ETIQUETA DEL VIDEO ACTUAL -->
+    <div style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--texto-secundario);">
+      <span id="videoNombrePractico">📖 Parte 1 - Introducción</span>
+    </div>
+
+    <!-- CONTROLES DE NAVEGACIÓN -->
+    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px; flex-wrap: wrap;">
+      <button onclick="videoAnteriorPractico()" class="btn btn--secondary" style="padding: 10px 20px; font-size: 0.95rem;">
+        ⬅️ Anterior
+      </button>
+      
+      <div style="padding: 10px 20px; background: var(--tarjeta-bg); border-radius: 8px; color: var(--texto-principal); font-weight: 600;">
+        Parte <span id="videoActualPractico">1</span> de 4
+      </div>
+      
+      <button onclick="videoSiguientePractico()" class="btn btn--primary" style="padding: 10px 20px; font-size: 0.95rem;">
+        Siguiente ➡️
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- === SECCIÓN: CONTENIDO DESCARGABLE === -->
+<section id="contenido">
+  <h2>Contenido <span style="color: var(--ficde-naranja);">Descargable</span></h2>
+  
+  <div class="download-section">
+    <h3>📁 Recursos para tu Equipo</h3>
+    <p>Descarga todos los archivos necesarios para trabajar con Fede-Bot. Accede a nuestro repositorio en GitHub.</p>
+    
+    <div class="docs-grid" style="max-width: 600px; margin: 0 auto;">
+      
+      <!-- TARJETA PRINCIPAL: GITHUB RECURSOS -->
+      <div class="doc-card" style="grid-column: 1/-1; background: linear-gradient(135deg, rgba(230, 129, 97, 0.1), rgba(44, 92, 110, 0.1)); border-left: 6px solid var(--ficde-naranja); transform: transition;">
+        <div class="doc-icon" style="font-size: 4rem;">
+          🗂️
+        </div>
+        
+        <h3 style="font-size: 1.4rem; margin: 20px 0;">Repositorio Completo</h3>
+        
+        <p style="font-size: 1rem; color: var(--texto-secundario); line-height: 1.8; margin-bottom: 25px;">
+          Accede a todos los recursos en nuestro repositorio de GitHub. Descarga bloques de trabajo, música, personajes y logos en un solo lugar.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+          <div style="text-align: center; padding: 12px; background: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div style="font-size: 2rem; margin-bottom: 5px;">📋</div>
+            <p style="font-size: 0.85rem; margin: 0;">Archivos HTML</p>
+          </div>
+          <div style="text-align: center; padding: 12px; background: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div style="font-size: 2rem; margin-bottom: 5px;">🎵</div>
+            <p style="font-size: 0.85rem; margin: 0;">Música & GIFs</p>
+          </div>
+        </div>
+
+        <a href="https://github.com/alemai1/fede-bot-recursos" target="_blank" class="download-btn" style="display: inline-flex; align-items: center; gap: 10px; font-size: 1.1rem;">
+          🔗 Ir a GitHub
+          <svg style="width: 20px; height: 20px; display: inline;" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+
+        <p style="font-size: 0.75rem; color: #888; margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 12px;">
+          ℹ️ Usa los botones verdes "Code" o "Download" en GitHub para descargar los archivos
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  </div>
+
+  <!-- === FOOTER === -->
+  <footer>
+    <p><strong>Fede-Bot | Tutorial Académico</strong></p>
+    <p>© 2026 FICDE - Proyecto Fede-bot</p>
+    <p>Donde el aprendizaje se transforma en sueños posibles.</p>
+  </footer>
+
+  <script>
+    // === RADIO PLAYER FUNCTIONS ===
+    const audioPlayer = document.getElementById('audioPlayer');
+    const radioStatus = document.getElementById('radioStatus');
+    const radioPlayer = document.querySelector('.radio-player');
+    const radioPopup = document.getElementById('radioPopup');
+    let isPlaying = false;
+
+    function toggleRadioPopup() {
+      radioPopup.classList.toggle('active');
+    }
+
+    function playMusic() {
+      audioPlayer.play();
+      radioStatus.textContent = '🎵 ¡Reproduciéndose! 🎵';
+      radioPlayer.classList.add('playing');
+      isPlaying = true;
+    }
+
+    function stopMusic() {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      radioStatus.textContent = 'Presiona PLAY';
+      radioPlayer.classList.remove('playing');
+      isPlaying = false;
+    }
+
+    function setVolume(value) {
+      audioPlayer.volume = value / 100;
+    }
+
+    // Actualizar estado cuando termina la música
+    audioPlayer.addEventListener('ended', function() {
+      radioStatus.textContent = 'Canción finalizada ✓';
+      radioPlayer.classList.remove('playing');
+      isPlaying = false;
+    });
+
+    // Cerrar popup al clickear fuera
+    document.addEventListener('click', function(event) {
+      const isClickInsidePlayer = radioPlayer.contains(event.target) || radioPopup.contains(event.target);
+      if (!isClickInsidePlayer && radioPopup.classList.contains('active')) {
+        radioPopup.classList.remove('active');
+      }
+    });
+
+    // === SMOOTH SCROLL ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // === ANIMACIÓN AL SCROLL ===
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('section, .video-container, .download-section, .doc-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'all 0.6s ease-out';
+      observer.observe(el);
+    });
+  </script>
+<script>
+  // === VIDEOS TEÓRICO (con Saludo primero) ===
+  const videosTeorico = [
+    { src: 'contenido/saludo.mp4', nombre: '🎬 Presentación - Saludo' },
+    { src: 'contenido/video_teorico_parte1.mp4', nombre: '📖 Parte 1 - Fundamentos' },
+    { src: 'contenido/video_teorico_parte2.mp4', nombre: '📖 Parte 2 - Arquitectura' }
+  ];
+  let indexTeorico = 0;
+
+  function cambiarVideoTeorico(index) {
+    indexTeorico = index;
+    const video = document.getElementById('videoTeorico');
+    video.src = videosTeorico[indexTeorico].src;
+    video.load();
+    video.play();
+    
+    // Actualizar indicadores
+    document.querySelectorAll('#teorica .video-indicator').forEach((btn, i) => {
+      if (i === indexTeorico) {
+        btn.style.background = 'var(--ficde-naranja)';
+        btn.style.border = 'none';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.border = '2px solid var(--ficde-naranja)';
+      }
+    });
+    
+    // Actualizar nombre y contador
+    document.getElementById('videoNombreTeorico').textContent = videosTeorico[indexTeorico].nombre;
+    document.getElementById('videoActualTeorico').textContent = indexTeorico + 1;
+  }
+
+  function videoSiguienteTeorico() {
+    if (indexTeorico < videosTeorico.length - 1) {
+      cambiarVideoTeorico(indexTeorico + 1);
+    }
+  }
+
+  function videoAnteriorTeorico() {
+    if (indexTeorico > 0) {
+      cambiarVideoTeorico(indexTeorico - 1);
+    }
+  }
+
+  // === VIDEOS PRÁCTICO (4 partes) ===
+  const videosPractico = [
+    { src: 'contenido/video_practico_parte1.mp4', nombre: '📖 Parte 1 - Introducción' },
+    { src: 'contenido/video_practico_parte2.mp4', nombre: '📖 Parte 2 - Implementación' },
+    { src: 'contenido/video_practico_parte3.mp4', nombre: '📖 Parte 3 - Personalización' },
+    { src: 'contenido/video_practico_parte4.mp4', nombre: '📖 Parte 4 - Despliegue' }
+  ];
+  let indexPractico = 0;
+
+  function cambiarVideoPractico(index) {
+    indexPractico = index;
+    const video = document.getElementById('videoPractico');
+    video.src = videosPractico[indexPractico].src;
+    video.load();
+    video.play();
+    
+    // Actualizar indicadores
+    document.querySelectorAll('#practica .video-indicator').forEach((btn, i) => {
+      if (i === indexPractico) {
+        btn.style.background = 'var(--ficde-naranja)';
+        btn.style.border = 'none';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.border = '2px solid var(--ficde-naranja)';
+      }
+    });
+    
+    // Actualizar nombre y contador
+    document.getElementById('videoNombrePractico').textContent = videosPractico[indexPractico].nombre;
+    document.getElementById('videoActualPractico').textContent = indexPractico + 1;
+  }
+
+  function videoSiguientePractico() {
+    if (indexPractico < videosPractico.length - 1) {
+      cambiarVideoPractico(indexPractico + 1);
+    }
+  }
+
+  function videoAnteriorPractico() {
+    if (indexPractico > 0) {
+      cambiarVideoPractico(indexPractico - 1);
+    }
+  }
+</script>
+
+</body>
+</html>
